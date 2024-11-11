@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "commonjs",
+    "jsx": "react-jsx", // Use "react" for React 17 and below
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "./dist",
+    "moduleResolution": "node", // Use Node module resolution
+    "baseUrl": "./", // Base URL for resolving module names
+    "paths": {
+      "*": ["node_modules/*", "src/types/*"] // Add any custom type paths if needed
+    }
+  },
+  "include": ["src/**/*"], // Include all TypeScript files in src directory
+  "exclude": ["node_modules"] // Exclude node_modules
+}
