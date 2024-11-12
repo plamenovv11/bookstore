@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button, CircularProgress, Typography, Box } from '@mui/material';
-import { useCreateImageMutation } from '../api';
+import { useCreateImageMutation } from '../services/api';
 
 interface ImageUploaderProps {
     onImageUpload: (url: string) => void;
