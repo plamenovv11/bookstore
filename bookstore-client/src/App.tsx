@@ -1,44 +1,53 @@
-import './App.css';
-import React, { useState } from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import SideNavigation from './components/SideNavigation';
 import BookList from './components/BookList';
 import Cart from './components/Cart';
 import { SnackbarProvider } from './components/SnackbarContext';
-import AuthDialog from './components/AuthDialog';
-import { Button } from '@mui/material';
+import AuthPage from './pages/AuthPage';
+import { useSelector } from 'react-redux';
+import { Box } from '@mui/material';
+import { RootState } from './redux/store';
 
-const App: React.FC = () => {
-  const [isAuthDialogOpen, setAuthDialogOpen] = useState(false);
+const AppContainer: React.FC = () => {
+  const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
+  const navigate = useNavigate();
 
-  const handleOpenAuthDialog = () => {
-    setAuthDialogOpen(true);
-  };
-
-  const handleCloseAuthDialog = () => {
-    setAuthDialogOpen(false);
-  };
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate('/auth');
+    }
+  }, [isAuthenticated, navigate]);
 
   return (
-    <div className="App">
-      <SnackbarProvider>
-        <Router>
-          <Button variant="contained" color="primary" onClick={handleOpenAuthDialog} style={{ position: 'absolute', top: 10, right: 10 }}>
-            Login / Register
-          </Button>
+    <Box sx={{ display: 'flex', height: '100vh' }}>
+      {isAuthenticated ? (
+        <>
           <SideNavigation />
-
-          <Routes>
-            <Route path="/" element={<Navigate to="/available-books" replace />} />
-            <Route path="/available-books" element={<BookList />} />
-            <Route path="/cart" element={<Cart />} />
-          </Routes>
-
-          <AuthDialog open={isAuthDialogOpen} onClose={handleCloseAuthDialog} />
-        </Router>
-      </SnackbarProvider>
-    </div>
+          <Box sx={{ flexGrow: 1 }}>
+            <Routes>
+              <Route path="/" element={<Navigate to="/available-books" replace />} />
+              <Route path="/available-books" element={<BookList />} />
+              <Route path="/cart" element={<Cart />} />
+            </Routes>
+          </Box>
+        </>
+      ) : (
+        <Routes>
+          <Route path="/" element={<Navigate to="/auth" replace />} />
+          <Route path="/auth" element={<AuthPage />} />
+        </Routes>
+      )}
+    </Box>
   );
 };
+
+const App: React.FC = () => (
+  <SnackbarProvider>
+    <Router>
+      <AppContainer />
+    </Router>
+  </SnackbarProvider>
+);
 
 export default App;

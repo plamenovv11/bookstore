@@ -73,7 +73,7 @@ const BookList: React.FC = () => {
             {hasBooks ? (
                 <Grid container spacing={3}>
                     {books.map((book) => (
-                        <Grid item xs={12} sm={6} md={4} key={book._id}>
+                        <Grid item xs={12} sm={2} md={4} key={book._id}>
                             <BookCard
                                 title={book.title}
                                 author={book.author}

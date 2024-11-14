@@ -21,7 +21,7 @@ const AddBookDialog: React.FC<AddBookDialogProps> = ({ open, handleClose, onSubm
     const [isSubmitting, setIsSubmitting] = React.useState(false);
 
     const handleImageUpload = (url: string) => {
-        setImageUrl(url); // Set the uploaded image URL
+        setImageUrl(url);
     };
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -36,7 +36,7 @@ const AddBookDialog: React.FC<AddBookDialogProps> = ({ open, handleClose, onSubm
             price: parseFloat(formJson.price as string),
             publishedDate: formJson.publishedDate as string,
             genre: formJson.genre as string,
-            imageUrl: imageUrl || '', // Include the image URL
+            imageUrl: imageUrl || '',
         };
 
         setIsSubmitting(true);
@@ -140,7 +140,6 @@ const AddBookDialog: React.FC<AddBookDialogProps> = ({ open, handleClose, onSubm
             <DialogActions>
                 <Button onClick={handleClose}>Cancel</Button>
 
-                {/* Show loader when submitting */}
                 <Button type="submit" disabled={isSubmitting || !imageUrl}>
                     {isSubmitting ? (
                         <CircularProgress size={24} />
