@@ -3,21 +3,16 @@ import { BrowserRouter as Router, Route, Routes, Navigate, useNavigate } from 'r
 import SideNavigation from './components/SideNavigation';
 import BookList from './components/BookList';
 import Cart from './components/Cart';
-import { SnackbarProvider, useSnackbar } from './components/SnackbarContext';
-import { AuthProvider } from './context/AuthContext';
+import { SnackbarProvider } from './components/SnackbarContext';
 import AuthPage from './pages/AuthPage';
 import { useSelector } from 'react-redux';
-import { Box, Button } from '@mui/material';
-import { RootState } from './store/store';
-import { logout as logoutAction } from './store/authSlice';
-import { store } from './store/store';
-import { useLogoutMutation } from './services/authApi';
+import { Box } from '@mui/material';
+import { RootState } from './redux/store';
+import LogoutButton from './components/LogoutButton';
 
-const App: React.FC = () => {
+const AppContainer: React.FC = () => {
   const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
   const navigate = useNavigate();
-  const [logout] = useLogoutMutation();
-  const { showSnackbar } = useSnackbar();
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -25,51 +20,30 @@ const App: React.FC = () => {
     }
   }, [isAuthenticated, navigate]);
 
-  const handleLogout = async () => {
-    try {
-      await logout().unwrap();
-      store.dispatch(logoutAction());
-      navigate('/auth');
-      showSnackbar(`Logout successful!`, 'success');
-    } catch (err) {
-      showSnackbar(`Fail to logout!, ${JSON.stringify(err)}`, 'error');
-    }
-  };
-
   return (
     <Box className="App">
       {isAuthenticated && (
         <>
-          <Button
-            variant="contained"
-            color="primary"
-            style={{ position: 'absolute', top: 10, right: 10 }}
-            onClick={handleLogout}
-          >
-            Logout
-          </Button>
+          <LogoutButton />
           <SideNavigation />
         </>
-      )
-      }
+      )}
       <Routes>
         <Route path="/" element={<Navigate to="/available-books" replace />} />
         <Route path="/auth" element={<AuthPage />} />
         <Route path="/available-books" element={<BookList />} />
         <Route path="/cart" element={<Cart />} />
       </Routes>
-    </Box >
+    </Box>
   );
 };
 
-const AppWithAuth = () => (
+const App: React.FC = () => (
   <SnackbarProvider>
     <Router>
-      <AuthProvider>
-        <App />
-      </AuthProvider>
+      <AppContainer />
     </Router>
   </SnackbarProvider>
 );
 
-export default AppWithAuth;
+export default App;

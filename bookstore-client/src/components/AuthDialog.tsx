@@ -5,7 +5,7 @@ import { useLoginMutation, useRegisterMutation } from '../services/authApi';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { loginSchema, registerSchema } from './validationSchemas';
 import { useDispatch } from 'react-redux';
-import { login as loginAction } from '../store/authSlice';
+import { login as loginAction } from '../redux/authSlice';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from './SnackbarContext';
 
