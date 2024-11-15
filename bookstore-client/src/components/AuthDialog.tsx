@@ -60,7 +60,7 @@ const AuthDialog: React.FC<AuthDialogProps> = ({ open, onClose }) => {
                 reset();
             }
         } catch (err) {
-            showSnackbar(`Authentication failed: ${JSON.stringify(err)}`, 'error');
+            showSnackbar(`Authentication failed: ${(err)}`, 'error');
         }
     };
 

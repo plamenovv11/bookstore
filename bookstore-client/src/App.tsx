@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import SideNavigation from './components/SideNavigation';
 import BookList from './components/BookList';
 import Cart from './components/Cart';
@@ -8,7 +8,6 @@ import AuthPage from './pages/AuthPage';
 import { useSelector } from 'react-redux';
 import { Box } from '@mui/material';
 import { RootState } from './redux/store';
-import LogoutButton from './components/LogoutButton';
 
 const AppContainer: React.FC = () => {
   const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
@@ -21,19 +20,24 @@ const AppContainer: React.FC = () => {
   }, [isAuthenticated, navigate]);
 
   return (
-    <Box className="App">
-      {isAuthenticated && (
+    <Box sx={{ display: 'flex', height: '100vh' }}>
+      {isAuthenticated ? (
         <>
-          <LogoutButton />
           <SideNavigation />
+          <Box sx={{ flexGrow: 1 }}>
+            <Routes>
+              <Route path="/" element={<Navigate to="/available-books" replace />} />
+              <Route path="/available-books" element={<BookList />} />
+              <Route path="/cart" element={<Cart />} />
+            </Routes>
+          </Box>
         </>
+      ) : (
+        <Routes>
+          <Route path="/" element={<Navigate to="/auth" replace />} />
+          <Route path="/auth" element={<AuthPage />} />
+        </Routes>
       )}
-      <Routes>
-        <Route path="/" element={<Navigate to="/available-books" replace />} />
-        <Route path="/auth" element={<AuthPage />} />
-        <Route path="/available-books" element={<BookList />} />
-        <Route path="/cart" element={<Cart />} />
-      </Routes>
     </Box>
   );
 };
