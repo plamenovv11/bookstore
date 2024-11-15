@@ -3,7 +3,7 @@ name: Lint Backend Code
 on:
   pull_request:
     paths:
-      - 'backend/**'
+      - 'bookstore-server/**'
 
 jobs:
   lint:
@@ -16,14 +16,14 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '16'  # Specify your Node version
+          node-version: '18' 
 
       - name: Install dependencies
         run: |
-          cd backend
+          cd bookstore-server
           npm install
 
       - name: Run ESLint
         run: |
-          cd backend
+          cd bookstore-server
           npm run lint
