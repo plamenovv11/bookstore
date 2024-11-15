@@ -1,20 +1,35 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore, combineReducers } from '@reduxjs/toolkit';
+import { persistStore, persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
 import booksReducer from './booksSlice';
+import authReducer from './authSlice';
+import api from '../services/api';
 import { setupListeners } from '@reduxjs/toolkit/query';
-import api from '../services/api'; // Import your API slice
 
-const store = configureStore({
-    reducer: {
-        [api.reducerPath]: api.reducer, // Add the API slice reducer
-    },
-    middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware().concat(api.middleware), // Add the API middleware
+const persistConfig = {
+    key: 'root',
+    storage,
+    whitelist: ['auth'],
+};
+
+const rootReducer = combineReducers({
+    [api.reducerPath]: api.reducer,
+    books: booksReducer,
+    auth: authReducer,
 });
 
-setupListeners(store.dispatch); // Enable refetching on focus and network reconnecti
+const persistedReducer = persistReducer(persistConfig, rootReducer);
 
+const store = configureStore({
+    reducer: persistedReducer,
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware({ serializableCheck: false }).concat(api.middleware),
+});
+
+const persistor = persistStore(store);
+
+setupListeners(store.dispatch);
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
-
-export default store;
+export { store, persistor };
