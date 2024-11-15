@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ServeStaticModule } from '@nestjs/serve-static';
-import * as path from 'path';
+import { ServeStaticModule } from '@nestjs/serve-static';  // Import ServeStaticModule
+import * as path from 'path'; // To resolve paths
 import { AppController } from './app.controller';
 import { ImagesController } from './images/images.controller';
 import { AuthController } from './auth/auth.controller';

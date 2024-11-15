@@ -4,10 +4,6 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { useLoginMutation, useRegisterMutation } from '../services/authApi';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { loginSchema, registerSchema } from './validationSchemas';
-import { useDispatch } from 'react-redux';
-import { login as loginAction } from '../store/authSlice';
-import { useNavigate } from 'react-router-dom';
-import { useSnackbar } from './SnackbarContext';
 
 interface AuthDialogProps {
     open: boolean;
@@ -22,9 +18,7 @@ interface AuthFormData {
 
 const AuthDialog: React.FC<AuthDialogProps> = ({ open, onClose }) => {
     const [tabIndex, setTabIndex] = useState(0);
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
-    const { showSnackbar } = useSnackbar();
+    const [error, setError] = useState('');
 
     const {
         register,
@@ -47,20 +41,25 @@ const AuthDialog: React.FC<AuthDialogProps> = ({ open, onClose }) => {
     const handleAuth: SubmitHandler<AuthFormData> = async (data) => {
         try {
             if (tabIndex === 0) {
-                await login({ email: data.email, password: data.password }).unwrap();
-                dispatch(loginAction());
-                navigate('/available-books');
+                const response = await login({ email: data.email, password: data.password }).unwrap();
+
+                localStorage.setItem('sessionId', response.sessionId);
+
+                console.log('Logged in successfully:', response.sessionId);
+                onClose();
             } else {
                 if (data.repeatPassword && data.password !== data.repeatPassword) {
+                    setError('Passwords must match');
                     return;
                 }
-                await registerUser({ email: data.email, password: data.password }).unwrap();
-                showSnackbar(`Registration of ${data.email} successfuly!`, 'success');
-                setTabIndex(0);
-                reset();
+
+                const response = await registerUser({ email: data.email, password: data.password }).unwrap();
+                console.log('Registered successfully:', response.message);
+                onClose();
             }
         } catch (err) {
-            showSnackbar(`Authentication failed: ${JSON.stringify(err)}`, 'error');
+            console.error('Authentication failed:', err);
+            setError('Authentication failed. Please try again.');
         }
     };
 
@@ -81,9 +80,12 @@ const AuthDialog: React.FC<AuthDialogProps> = ({ open, onClose }) => {
                         type="email"
                         {...register('email')}
                         error={Boolean(errors.email)}
+
+
                         helperText={errors.email?.message}
                         required
                     />
+
                     <TextField
                         label="Password"
                         fullWidth
@@ -94,6 +96,7 @@ const AuthDialog: React.FC<AuthDialogProps> = ({ open, onClose }) => {
                         helperText={errors.password?.message}
                         required
                     />
+
                     {tabIndex === 1 && (
                         <TextField
                             label="Repeat Password"
@@ -107,10 +110,14 @@ const AuthDialog: React.FC<AuthDialogProps> = ({ open, onClose }) => {
                         />
                     )}
 
+                    {error && <Typography color="error" sx={{ mt: 1 }}>{error}</Typography>}
                 </Box>
             </DialogContent>
+
             <DialogActions>
-                <Button onClick={onClose} color="primary">Cancel</Button>
+                <Button onClick={onClose} color="primary">
+                    Cancel
+                </Button>
                 <Button
                     type="submit"
                     onClick={handleSubmit(handleAuth)}

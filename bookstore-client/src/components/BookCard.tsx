@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Card, CardContent, Typography, CardActions, CardMedia, Button } from '@mui/material';
-import BookPreview from './BookPreview';
+import BookPreview from './BookPreview'; // Import the preview component
 import DEFAULT_IMAGE_URL from '../assets/images/book-image.jpg';
 
 interface BookCardProps {
@@ -44,8 +44,8 @@ const BookCard: React.FC<BookCardProps> = ({
             component="div"
             sx={{
               whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
+              overflow: 'hidden',    
+              textOverflow: 'ellipsis',  
             }}
           >
             {title}

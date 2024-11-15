@@ -1,75 +1,44 @@
-import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate, useNavigate } from 'react-router-dom';
+import './App.css';
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import SideNavigation from './components/SideNavigation';
 import BookList from './components/BookList';
 import Cart from './components/Cart';
-import { SnackbarProvider, useSnackbar } from './components/SnackbarContext';
-import { AuthProvider } from './context/AuthContext';
-import AuthPage from './pages/AuthPage';
-import { useSelector } from 'react-redux';
-import { Box, Button } from '@mui/material';
-import { RootState } from './store/store';
-import { logout as logoutAction } from './store/authSlice';
-import { store } from './store/store';
-import { useLogoutMutation } from './services/authApi';
+import { SnackbarProvider } from './components/SnackbarContext';
+import AuthDialog from './components/AuthDialog';
+import { Button } from '@mui/material';
 
 const App: React.FC = () => {
-  const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
-  const navigate = useNavigate();
-  const [logout] = useLogoutMutation();
-  const { showSnackbar } = useSnackbar();
+  const [isAuthDialogOpen, setAuthDialogOpen] = useState(false);
 
-  useEffect(() => {
-    if (!isAuthenticated) {
-      navigate('/auth');
-    }
-  }, [isAuthenticated, navigate]);
+  const handleOpenAuthDialog = () => {
+    setAuthDialogOpen(true);
+  };
 
-  const handleLogout = async () => {
-    try {
-      await logout().unwrap();
-      store.dispatch(logoutAction());
-      navigate('/auth');
-      showSnackbar(`Logout successful!`, 'success');
-    } catch (err) {
-      showSnackbar(`Fail to logout!, ${JSON.stringify(err)}`, 'error');
-    }
+  const handleCloseAuthDialog = () => {
+    setAuthDialogOpen(false);
   };
 
   return (
-    <Box className="App">
-      {isAuthenticated && (
-        <>
-          <Button
-            variant="contained"
-            color="primary"
-            style={{ position: 'absolute', top: 10, right: 10 }}
-            onClick={handleLogout}
-          >
-            Logout
+    <div className="App">
+      <SnackbarProvider>
+        <Router>
+          <Button variant="contained" color="primary" onClick={handleOpenAuthDialog} style={{ position: 'absolute', top: 10, right: 10 }}>
+            Login / Register
           </Button>
           <SideNavigation />
-        </>
-      )
-      }
-      <Routes>
-        <Route path="/" element={<Navigate to="/available-books" replace />} />
-        <Route path="/auth" element={<AuthPage />} />
-        <Route path="/available-books" element={<BookList />} />
-        <Route path="/cart" element={<Cart />} />
-      </Routes>
-    </Box >
+
+          <Routes>
+            <Route path="/" element={<Navigate to="/available-books" replace />} />
+            <Route path="/available-books" element={<BookList />} />
+            <Route path="/cart" element={<Cart />} />
+          </Routes>
+
+          <AuthDialog open={isAuthDialogOpen} onClose={handleCloseAuthDialog} />
+        </Router>
+      </SnackbarProvider>
+    </div>
   );
 };
 
-const AppWithAuth = () => (
-  <SnackbarProvider>
-    <Router>
-      <AuthProvider>
-        <App />
-      </AuthProvider>
-    </Router>
-  </SnackbarProvider>
-);
-
-export default AppWithAuth;
+export default App;
