@@ -34,15 +34,4 @@ export class AuthController {
         const loginResponse = await this.authService.login(user, req.session);
         return res.status(200).json(loginResponse);
     }
-
-    @Post('logout')
-    async logout(@Req() req: Request, @Res() res: Response) {
-        req.session.destroy((err) => {
-            if (err) {
-                return res.status(500).json({ message: 'Logout failed' });
-            }
-            res.clearCookie('connect.sid', { path: '/' });
-            return res.status(200).json({ message: 'Logout successful' });
-        });
-    }
 }

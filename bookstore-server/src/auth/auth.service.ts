@@ -29,8 +29,4 @@ export class AuthService {
         session.user = user;
         return { message: 'Logged in successfully', sessionId: session.id };
     }
-
-    async logout(session: any) {
-        session.destroy();
-    }
 }
