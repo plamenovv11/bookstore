@@ -1,10 +1,9 @@
 import * as React from 'react';
 import { useGetBooksQuery, useCreateBookMutation } from '../services/api';
 import { Typography } from '@mui/material';
-import BookCard from './BookCard';
+import { BookCard } from './BookCard';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
-
 import AddBookDialog from './AddBookDialog';
 import Box from '@mui/material/Box';
 import { useEffect } from 'react';
@@ -74,15 +73,7 @@ const BookList: React.FC = () => {
                 <Grid container spacing={3}>
                     {books.map((book) => (
                         <Grid item xs={12} sm={2} md={4} key={book._id}>
-                            <BookCard
-                                title={book.title}
-                                author={book.author}
-                                description={book.description}
-                                price={book.price}
-                                publishedDate={book.publishedDate.toString().split('T')[0]}
-                                genre={book.genre}
-                                imageUrl={book.imageUrl}
-                            />
+                            <BookCard book={book} />
                         </Grid>
                     ))}
                 </Grid>

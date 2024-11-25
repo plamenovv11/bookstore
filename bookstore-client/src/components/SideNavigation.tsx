@@ -16,6 +16,9 @@ import { useLogoutMutation } from '../services/authApi';
 import { useSnackbar } from './SnackbarContext';
 import { store } from '../redux/store';
 import { logout as logoutAction } from '../redux/authSlice';
+import { Badge } from '@mui/material';
+import { useSelector } from 'react-redux';
+import { RootState } from '../redux/store';
 
 const drawerWidth = 240;
 
@@ -23,6 +26,8 @@ export default function SideNavigation() {
     const navigate = useNavigate();
     const [logout] = useLogoutMutation();
     const { showSnackbar } = useSnackbar();
+
+    const cartItemCount = useSelector((state: RootState) => state.cart.itemCount);
 
     const handleLogout = async () => {
         try {
@@ -66,13 +71,17 @@ export default function SideNavigation() {
                     </List>
                     <Divider />
                     <List>
-                        <ListItem key="cart" disablePadding>
-                            <ListItemButton component={Link} to="/cart">
-                                <ListItemIcon>
-                                    <ShoppingCartIcon />
-                                </ListItemIcon>
-                                <ListItemText primary="Your Cart" />
-                            </ListItemButton>
+                        <ListItem key="stores" disablePadding>
+                            <Box sx={{ display: 'flex' }}>
+                                <ListItemButton component={Link} to="/cart">
+                                    <ListItemIcon>
+                                        <Badge badgeContent={cartItemCount} color="primary">
+                                            <ShoppingCartIcon />
+                                        </Badge>
+                                    </ListItemIcon>
+                                    <ListItemText primary="Your Cart" />
+                                </ListItemButton>
+                            </Box>
                         </ListItem>
                     </List>
                     <Divider />

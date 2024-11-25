@@ -22,7 +22,7 @@ export class AuthService {
         if (!isPasswordValid) {
             return null;
         }
-        return { email: user.email };
+        return { email: user.email, _id: user._id };
     }
 
     async login(user: any, session: any) {

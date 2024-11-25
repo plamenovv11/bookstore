@@ -1,17 +1,15 @@
 import React from 'react';
 import { Backdrop, Box, Typography, Button } from '@mui/material';
+import DEFAULT_IMAGE_URL from '../assets/images/book-image.jpg';
+import { Book } from '../common/types';
 
 interface BookPreviewProps {
     open: boolean;
     onClose: () => void;
-    title: string;
-    image: string;
-    price: string;
-    description: string;
-    publishDate: string;
+    book: Book
 }
 
-const BookPreview: React.FC<BookPreviewProps> = ({ open, onClose, title, image, price, description, publishDate }) => {
+const BookPreview: React.FC<BookPreviewProps> = ({ open, onClose, book }) => {
     return (
         <Backdrop open={open} onClick={onClose} sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}>
             <Box
@@ -32,19 +30,19 @@ const BookPreview: React.FC<BookPreviewProps> = ({ open, onClose, title, image, 
                 onClick={(e) => e.stopPropagation()}
             >
                 <img
-                    src={image}
-                    alt={title}
+                    src={book.imageUrl || DEFAULT_IMAGE_URL}
+                    alt={book.title}
                     style={{ width: 'auto', height: '250px', borderRadius: 8 }}
                 />
-                <Typography variant="h5" gutterBottom>{title}</Typography>
+                <Typography variant="h5" gutterBottom>{book.title}</Typography>
 
                 <Typography color="primary">
-                    <b> Price:</b> {price}
+                    <b> Price:</b> {book.price}
                 </Typography>
 
-                <Typography color="primary">{description}</Typography>
+                <Typography color="primary">{book.description}</Typography>
                 <Typography color="primary">
-                    <b>Published Date</b>: {new Date(publishDate).toLocaleDateString()}
+                    <b>Published Date</b>: {new Date(book.publishedDate).toLocaleDateString()}
                 </Typography>
                 <Button sx={{marginTop: '2px'}} variant="contained" onClick={onClose}>Close</Button>
             </Box>

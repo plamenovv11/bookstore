@@ -12,6 +12,9 @@ import { AuthModule } from './auth/auth.module';
 import { UserModule } from './auth/user.module';
 import { UserService } from './auth/user.service';
 import { AuthService } from './auth/auth.service';
+import { CartController } from './carts/carts.controller';
+import { CartsModule } from './carts/carts.module';
+import { CartService } from './carts/carts.service';
 
 @Module({
   imports: [
@@ -19,6 +22,7 @@ import { AuthService } from './auth/auth.service';
     UserModule,
     MongooseModule.forRoot(DATABASE_CONNECTION),
     BooksModule,
+    CartsModule,
     ServeStaticModule.forRoot({
       rootPath: path.join(__dirname, '..', 'uploads'),
       serveRoot: '/uploads',

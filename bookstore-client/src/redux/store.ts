@@ -3,6 +3,7 @@ import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import booksReducer from './booksSlice';
 import authReducer from './authSlice';
+import cartReducer from './cartSlice';
 import { authApi } from '../services/authApi';
 import api from '../services/api';
 import { setupListeners } from '@reduxjs/toolkit/query';
@@ -18,6 +19,7 @@ const rootReducer = combineReducers({
     [authApi.reducerPath]: authApi.reducer,
     books: booksReducer,
     auth: authReducer,
+    cart: cartReducer,
 });
 
 
